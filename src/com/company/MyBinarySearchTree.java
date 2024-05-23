@@ -101,43 +101,50 @@ public class MyBinarySearchTree<K extends Comparable<K>, V> {
 
             //two children
             else {
-                Node node = current;
-                current = findSmallest(node.right);
-                current.right = deleteSmallest(node.right);
-                current.left = node.left;
+                Node temp = current;
+                current = findSmallestNode(temp.right);
+                current.right = deleteSmallestNode(temp.right);
+                current.left = temp.left;
             }
         }
         return current;
     }
 
     //get the smallest node
-    private Node findSmallest(Node node) {
+    private Node findSmallestNode(Node node) {
         return node.left == null ? node : findSmallest(node.right);
     }
 
     //delete smallest node
-    private Node deleteSmallest(Node node) {
+    private Node deleteSmallestNode(Node node) {
         if (node.left == null)
             return  node.right;
 
-        node.left = deleteSmallest(node.left);
+        node.left = deleteSmallestNode(node.left);
         return node;
     }
 
-    //I don't know how to make Iterable<K> and accessible K and V at the same time
-    public Iterable<Node> iter() {
-        ArrayList<Node> nodes = new ArrayList<>();
-        inOrderTraversal(root, nodes);
-        return nodes;
+    //Updated iterator
+    public Iterable<K> iterator() {
+        ArrayList<K> keys = new ArrayList<>();
+        inOrderTraversal(root, keys);
+        return keys;
     }
 
     //check all left nodes, then root, then finally right nodes
-    private void inOrderTraversal(Node node, ArrayList<Node> nodes) {
+    private void inOrderTraversal(Node node, ArrayList<K> keys) {
         if (node == null)
-            return; //stop
+            return;
 
-        inOrderTraversal(node.left, nodes);
-        nodes.add(node);
-        inOrderTraversal(node.right, nodes);
+        inOrderTraversal(node.left, keys);
+
+        /* Here, we firstly go to the left to reach the smallest key,
+        and then we start to output the keys and values of the nodes.
+         */
+        System.out.println("Key is " + node.key + " and value is " + node.val);
+
+        keys.add(node.key);
+        inOrderTraversal(node.right, keys);
     }
+
 }
